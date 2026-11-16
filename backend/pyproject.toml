@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-replay"
+version = "0.1.0"
+description = "Find where an AI agent run broke, fix that step, and resume from it."
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi==0.115.6",
+    "uvicorn==0.34.0",
+    "pydantic==2.10.4",
+    "openai==1.59.3",
+    "pyyaml==6.0.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.4",
+    "pytest-cov==6.0.0",
+    "httpx==0.28.1",
+    "ruff==0.8.4",
+    "mypy==1.14.0",
+    "types-PyYAML==6.0.12.20241230",
+]
+
+[tool.setuptools.packages.find]
+include = ["agent_replay*"]
+
+[tool.setuptools.package-data]
+agent_replay = ["catalog/*.json", "localizers/*.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["live: calls the real OpenAI API, run only with -m live"]
+addopts = "-m 'not live'"
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+# The formatter wraps code. Long prompt and message strings are left whole.
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+disallow_untyped_defs = true

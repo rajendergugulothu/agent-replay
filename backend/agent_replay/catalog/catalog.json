@@ -1,0 +1,995 @@
+{
+  "note": "Synthetic data. Courses, codes, sections and students are invented and match no real university.",
+  "degree": {
+    "major": "Computer Science",
+    "required": [
+      "QCS 101",
+      "QCS 102",
+      "QCS 120",
+      "QCS 201",
+      "QCS 205",
+      "QCS 210",
+      "QCS 220",
+      "QCS 230",
+      "QCS 240",
+      "QCS 301",
+      "QCS 310",
+      "QCS 320",
+      "QCS 330",
+      "QCS 340",
+      "QCS 350",
+      "QCS 370",
+      "QCS 490"
+    ]
+  },
+  "courses": [
+    {
+      "code": "QCS 101",
+      "title": "Introduction to Programming",
+      "credits": 4,
+      "prerequisites": [],
+      "sections": [
+        {
+          "id": "QCS101-01",
+          "course_code": "QCS 101",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "08:00",
+          "end": "08:50"
+        },
+        {
+          "id": "QCS101-02",
+          "course_code": "QCS 101",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "10:00",
+          "end": "10:50"
+        },
+        {
+          "id": "QCS101-03",
+          "course_code": "QCS 101",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "14:00",
+          "end": "15:15"
+        }
+      ]
+    },
+    {
+      "code": "QCS 102",
+      "title": "Discrete Structures",
+      "credits": 3,
+      "prerequisites": [],
+      "sections": [
+        {
+          "id": "QCS102-01",
+          "course_code": "QCS 102",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "08:00",
+          "end": "09:15"
+        },
+        {
+          "id": "QCS102-02",
+          "course_code": "QCS 102",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "12:30",
+          "end": "13:45"
+        }
+      ]
+    },
+    {
+      "code": "QCS 110",
+      "title": "Computing and Society",
+      "credits": 3,
+      "prerequisites": [],
+      "sections": [
+        {
+          "id": "QCS110-01",
+          "course_code": "QCS 110",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "09:00",
+          "end": "09:50"
+        },
+        {
+          "id": "QCS110-02",
+          "course_code": "QCS 110",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "14:00",
+          "end": "14:50"
+        },
+        {
+          "id": "QCS110-03",
+          "course_code": "QCS 110",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "12:30",
+          "end": "13:45"
+        }
+      ]
+    },
+    {
+      "code": "QCS 120",
+      "title": "Programming II",
+      "credits": 4,
+      "prerequisites": [
+        "QCS 101"
+      ],
+      "sections": [
+        {
+          "id": "QCS120-01",
+          "course_code": "QCS 120",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "09:30",
+          "end": "10:45"
+        },
+        {
+          "id": "QCS120-02",
+          "course_code": "QCS 120",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "11:00",
+          "end": "12:15"
+        }
+      ]
+    },
+    {
+      "code": "QCS 201",
+      "title": "Data Structures",
+      "credits": 4,
+      "prerequisites": [
+        "QCS 120"
+      ],
+      "sections": [
+        {
+          "id": "QCS201-01",
+          "course_code": "QCS 201",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "08:00",
+          "end": "08:50"
+        },
+        {
+          "id": "QCS201-02",
+          "course_code": "QCS 201",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "13:00",
+          "end": "13:50"
+        },
+        {
+          "id": "QCS201-03",
+          "course_code": "QCS 201",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "11:00",
+          "end": "12:15"
+        }
+      ]
+    },
+    {
+      "code": "QCS 205",
+      "title": "Computer Organization",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 120"
+      ],
+      "sections": [
+        {
+          "id": "QCS205-01",
+          "course_code": "QCS 205",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "08:00",
+          "end": "09:15"
+        },
+        {
+          "id": "QCS205-02",
+          "course_code": "QCS 205",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "15:30",
+          "end": "16:45"
+        }
+      ]
+    },
+    {
+      "code": "QCS 210",
+      "title": "Probability for Computing",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 102"
+      ],
+      "sections": [
+        {
+          "id": "QCS210-01",
+          "course_code": "QCS 210",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "09:00",
+          "end": "09:50"
+        },
+        {
+          "id": "QCS210-02",
+          "course_code": "QCS 210",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "11:00",
+          "end": "11:50"
+        },
+        {
+          "id": "QCS210-03",
+          "course_code": "QCS 210",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "15:30",
+          "end": "16:45"
+        }
+      ]
+    },
+    {
+      "code": "QCS 220",
+      "title": "Software Design",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 201"
+      ],
+      "sections": [
+        {
+          "id": "QCS220-01",
+          "course_code": "QCS 220",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "09:30",
+          "end": "10:45"
+        },
+        {
+          "id": "QCS220-02",
+          "course_code": "QCS 220",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "14:00",
+          "end": "15:15"
+        }
+      ]
+    },
+    {
+      "code": "QCS 230",
+      "title": "Linear Algebra for Computing",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 102"
+      ],
+      "sections": [
+        {
+          "id": "QCS230-01",
+          "course_code": "QCS 230",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "08:00",
+          "end": "08:50"
+        },
+        {
+          "id": "QCS230-02",
+          "course_code": "QCS 230",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "10:00",
+          "end": "10:50"
+        },
+        {
+          "id": "QCS230-03",
+          "course_code": "QCS 230",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "14:00",
+          "end": "15:15"
+        }
+      ]
+    },
+    {
+      "code": "QCS 240",
+      "title": "Algorithms",
+      "credits": 4,
+      "prerequisites": [
+        "QCS 201",
+        "QCS 102"
+      ],
+      "sections": [
+        {
+          "id": "QCS240-01",
+          "course_code": "QCS 240",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "08:00",
+          "end": "09:15"
+        },
+        {
+          "id": "QCS240-02",
+          "course_code": "QCS 240",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "12:30",
+          "end": "13:45"
+        }
+      ]
+    },
+    {
+      "code": "QCS 250",
+      "title": "Web Development",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 120"
+      ],
+      "sections": [
+        {
+          "id": "QCS250-01",
+          "course_code": "QCS 250",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "09:00",
+          "end": "09:50"
+        },
+        {
+          "id": "QCS250-02",
+          "course_code": "QCS 250",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "14:00",
+          "end": "14:50"
+        },
+        {
+          "id": "QCS250-03",
+          "course_code": "QCS 250",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "12:30",
+          "end": "13:45"
+        }
+      ]
+    },
+    {
+      "code": "QCS 301",
+      "title": "Operating Systems",
+      "credits": 4,
+      "prerequisites": [
+        "QCS 205",
+        "QCS 201"
+      ],
+      "sections": [
+        {
+          "id": "QCS301-01",
+          "course_code": "QCS 301",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "09:30",
+          "end": "10:45"
+        },
+        {
+          "id": "QCS301-02",
+          "course_code": "QCS 301",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "11:00",
+          "end": "12:15"
+        }
+      ]
+    },
+    {
+      "code": "QCS 310",
+      "title": "Databases",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 201"
+      ],
+      "sections": [
+        {
+          "id": "QCS310-01",
+          "course_code": "QCS 310",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "08:00",
+          "end": "08:50"
+        },
+        {
+          "id": "QCS310-02",
+          "course_code": "QCS 310",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "13:00",
+          "end": "13:50"
+        },
+        {
+          "id": "QCS310-03",
+          "course_code": "QCS 310",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "11:00",
+          "end": "12:15"
+        }
+      ]
+    },
+    {
+      "code": "QCS 320",
+      "title": "Computer Networks",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 205"
+      ],
+      "sections": [
+        {
+          "id": "QCS320-01",
+          "course_code": "QCS 320",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "08:00",
+          "end": "09:15"
+        },
+        {
+          "id": "QCS320-02",
+          "course_code": "QCS 320",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "15:30",
+          "end": "16:45"
+        }
+      ]
+    },
+    {
+      "code": "QCS 330",
+      "title": "Theory of Computation",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 240"
+      ],
+      "sections": [
+        {
+          "id": "QCS330-01",
+          "course_code": "QCS 330",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "09:00",
+          "end": "09:50"
+        },
+        {
+          "id": "QCS330-02",
+          "course_code": "QCS 330",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "11:00",
+          "end": "11:50"
+        },
+        {
+          "id": "QCS330-03",
+          "course_code": "QCS 330",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "15:30",
+          "end": "16:45"
+        }
+      ]
+    },
+    {
+      "code": "QCS 340",
+      "title": "Artificial Intelligence",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 240",
+        "QCS 210"
+      ],
+      "sections": [
+        {
+          "id": "QCS340-01",
+          "course_code": "QCS 340",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "09:30",
+          "end": "10:45"
+        },
+        {
+          "id": "QCS340-02",
+          "course_code": "QCS 340",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "14:00",
+          "end": "15:15"
+        }
+      ]
+    },
+    {
+      "code": "QCS 350",
+      "title": "Software Engineering",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 220"
+      ],
+      "sections": [
+        {
+          "id": "QCS350-01",
+          "course_code": "QCS 350",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "08:00",
+          "end": "08:50"
+        },
+        {
+          "id": "QCS350-02",
+          "course_code": "QCS 350",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "10:00",
+          "end": "10:50"
+        },
+        {
+          "id": "QCS350-03",
+          "course_code": "QCS 350",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "14:00",
+          "end": "15:15"
+        }
+      ]
+    },
+    {
+      "code": "QCS 360",
+      "title": "Human-Computer Interaction",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 220"
+      ],
+      "sections": [
+        {
+          "id": "QCS360-01",
+          "course_code": "QCS 360",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "08:00",
+          "end": "09:15"
+        },
+        {
+          "id": "QCS360-02",
+          "course_code": "QCS 360",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "12:30",
+          "end": "13:45"
+        }
+      ]
+    },
+    {
+      "code": "QCS 370",
+      "title": "Programming Languages",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 240"
+      ],
+      "sections": [
+        {
+          "id": "QCS370-01",
+          "course_code": "QCS 370",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "09:00",
+          "end": "09:50"
+        },
+        {
+          "id": "QCS370-02",
+          "course_code": "QCS 370",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "14:00",
+          "end": "14:50"
+        },
+        {
+          "id": "QCS370-03",
+          "course_code": "QCS 370",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "12:30",
+          "end": "13:45"
+        }
+      ]
+    },
+    {
+      "code": "QCS 410",
+      "title": "Machine Learning",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 340",
+        "QCS 230"
+      ],
+      "sections": [
+        {
+          "id": "QCS410-01",
+          "course_code": "QCS 410",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "09:30",
+          "end": "10:45"
+        },
+        {
+          "id": "QCS410-02",
+          "course_code": "QCS 410",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "11:00",
+          "end": "12:15"
+        }
+      ]
+    },
+    {
+      "code": "QCS 420",
+      "title": "Distributed Systems",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 301",
+        "QCS 320"
+      ],
+      "sections": [
+        {
+          "id": "QCS420-01",
+          "course_code": "QCS 420",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "08:00",
+          "end": "08:50"
+        },
+        {
+          "id": "QCS420-02",
+          "course_code": "QCS 420",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "13:00",
+          "end": "13:50"
+        },
+        {
+          "id": "QCS420-03",
+          "course_code": "QCS 420",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "11:00",
+          "end": "12:15"
+        }
+      ]
+    },
+    {
+      "code": "QCS 430",
+      "title": "Computer Security",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 301"
+      ],
+      "sections": [
+        {
+          "id": "QCS430-01",
+          "course_code": "QCS 430",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "08:00",
+          "end": "09:15"
+        },
+        {
+          "id": "QCS430-02",
+          "course_code": "QCS 430",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "15:30",
+          "end": "16:45"
+        }
+      ]
+    },
+    {
+      "code": "QCS 440",
+      "title": "Compilers",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 370",
+        "QCS 330"
+      ],
+      "sections": [
+        {
+          "id": "QCS440-01",
+          "course_code": "QCS 440",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "09:00",
+          "end": "09:50"
+        },
+        {
+          "id": "QCS440-02",
+          "course_code": "QCS 440",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "11:00",
+          "end": "11:50"
+        },
+        {
+          "id": "QCS440-03",
+          "course_code": "QCS 440",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "15:30",
+          "end": "16:45"
+        }
+      ]
+    },
+    {
+      "code": "QCS 450",
+      "title": "Data Mining",
+      "credits": 3,
+      "prerequisites": [
+        "QCS 310",
+        "QCS 210"
+      ],
+      "sections": [
+        {
+          "id": "QCS450-01",
+          "course_code": "QCS 450",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "09:30",
+          "end": "10:45"
+        },
+        {
+          "id": "QCS450-02",
+          "course_code": "QCS 450",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "14:00",
+          "end": "15:15"
+        }
+      ]
+    },
+    {
+      "code": "QCS 490",
+      "title": "Capstone Project",
+      "credits": 4,
+      "prerequisites": [
+        "QCS 350"
+      ],
+      "sections": [
+        {
+          "id": "QCS490-01",
+          "course_code": "QCS 490",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "08:00",
+          "end": "08:50"
+        },
+        {
+          "id": "QCS490-02",
+          "course_code": "QCS 490",
+          "days": [
+            "Mon",
+            "Wed",
+            "Fri"
+          ],
+          "start": "10:00",
+          "end": "10:50"
+        },
+        {
+          "id": "QCS490-03",
+          "course_code": "QCS 490",
+          "days": [
+            "Tue",
+            "Thu"
+          ],
+          "start": "14:00",
+          "end": "15:15"
+        }
+      ]
+    }
+  ],
+  "students": [
+    {
+      "id": "stu_01",
+      "name": "Student One",
+      "major": "Computer Science",
+      "completed": [
+        "QCS 101",
+        "QCS 102",
+        "QCS 120",
+        "QCS 201",
+        "QCS 205",
+        "QCS 210",
+        "QCS 220"
+      ],
+      "must_take": [
+        "QCS 240"
+      ],
+      "min_credits": 12,
+      "max_credits": 16
+    },
+    {
+      "id": "stu_02",
+      "name": "Student Two",
+      "major": "Computer Science",
+      "completed": [
+        "QCS 101",
+        "QCS 102",
+        "QCS 120"
+      ],
+      "must_take": [
+        "QCS 201"
+      ],
+      "min_credits": 12,
+      "max_credits": 15
+    },
+    {
+      "id": "stu_03",
+      "name": "Student Three",
+      "major": "Computer Science",
+      "completed": [
+        "QCS 101",
+        "QCS 102",
+        "QCS 120",
+        "QCS 201",
+        "QCS 205",
+        "QCS 210",
+        "QCS 220",
+        "QCS 230",
+        "QCS 240",
+        "QCS 301",
+        "QCS 310",
+        "QCS 320",
+        "QCS 350"
+      ],
+      "must_take": [
+        "QCS 490"
+      ],
+      "min_credits": 9,
+      "max_credits": 13
+    }
+  ]
+}
