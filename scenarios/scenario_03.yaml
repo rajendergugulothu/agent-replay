@@ -1,0 +1,24 @@
+id: scenario_03
+title: The no-classes-before-10am rule is ignored
+description: >
+  For a few steps the agent acts as if the user never asked for late classes:
+  the sentence is missing from what the model sees while it searches for
+  sections. The rule is back in view afterwards.
+
+task:
+  student_id: stu_02
+  user_request: "Build my Spring schedule for the CS major. No classes before 10am."
+  constraints:
+    earliest_start: "10:00"
+
+injections:
+  - kind: drop_constraint
+    failure_type: goal_not_met
+    target:
+      at_step: 6
+    value: " No classes before 10am."
+    times: 4
+
+expected:
+  injected_step: 6
+  validator_reasons: [before_earliest_time]

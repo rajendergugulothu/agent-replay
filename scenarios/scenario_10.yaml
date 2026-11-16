@@ -1,0 +1,37 @@
+id: scenario_10
+title: "Two errors: a false prerequisite result, then a failed section search"
+description: >
+  Two separate faults in one run. The prerequisite tool wrongly clears
+  Machine Learning, and later the section search for the Capstone Project,
+  which the student must take, returns a service error.
+
+task:
+  student_id: stu_03
+  user_request: "Build my Spring schedule for the CS major. I want to take Machine Learning (QCS 410) if I am eligible. No classes before 10am."
+  constraints:
+    earliest_start: "10:00"
+
+injections:
+  - kind: replace_tool_output
+    failure_type: tool_failure
+    target:
+      tool: check_prerequisite
+      occurrence: 1
+      where:
+        course_code: "QCS 410"
+    value:
+      course_code: "QCS 410"
+      met: true
+      missing: []
+  - kind: replace_tool_output
+    failure_type: tool_failure
+    target:
+      tool: search_sections
+      occurrence: 1
+      where:
+        course_code: "QCS 490"
+    value:
+      error: "section service unavailable"
+
+expected:
+  validator_reasons: [unmet_prerequisite]

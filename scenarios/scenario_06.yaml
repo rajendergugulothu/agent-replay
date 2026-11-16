@@ -1,0 +1,26 @@
+id: scenario_06
+title: The same call repeated until the step budget runs out
+description: >
+  When the agent reaches its first section search, it repeats its previous
+  call instead, several times in a row. With a tight step budget the run
+  ends before a schedule is finished.
+
+task:
+  student_id: stu_03
+  user_request: "Build my Spring schedule for the CS major. No classes before 10am."
+  constraints:
+    earliest_start: "10:00"
+
+injections:
+  - kind: repeat_call
+    failure_type: wasted_steps
+    target:
+      tool: search_sections
+      occurrence: 1
+    times: 4
+
+expected:
+  validator_reasons: [budget_exhausted]
+
+limits:
+  max_steps: 12

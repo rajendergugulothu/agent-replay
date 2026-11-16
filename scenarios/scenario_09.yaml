@@ -1,0 +1,36 @@
+id: scenario_09
+title: "Two errors: wrong prerequisite check, then a search without the time rule"
+description: >
+  Two separate faults in one run. The prerequisite check for Artificial
+  Intelligence goes out for a different course, and later the section search
+  for Algorithms asks for sections from 8am instead of 10am.
+
+task:
+  student_id: stu_01
+  user_request: "Build my Spring schedule for the CS major. I want to take Artificial Intelligence (QCS 340) if I am eligible. No classes before 10am."
+  constraints:
+    earliest_start: "10:00"
+
+injections:
+  - kind: replace_argument
+    failure_type: wrong_argument_values
+    target:
+      tool: check_prerequisite
+      occurrence: 1
+      where:
+        course_code: "QCS 340"
+    argument: course_code
+    value: "QCS 310"
+  - kind: replace_argument
+    failure_type: wrong_argument_values
+    target:
+      tool: search_sections
+      occurrence: 1
+      where:
+        course_code: "QCS 240"
+    argument: earliest_start
+    value: "08:00"
+
+expected:
+  injected_step: 3
+  validator_reasons: [unmet_prerequisite, before_earliest_time]

@@ -1,0 +1,25 @@
+id: scenario_07
+title: Sections searched for the wrong course
+description: >
+  The agent searches sections for Theory of Computation when it meant to
+  search for Algorithms, the course the student must take this term.
+
+task:
+  student_id: stu_01
+  user_request: "Build my Spring schedule for the CS major. No classes before 10am."
+  constraints:
+    earliest_start: "10:00"
+
+injections:
+  - kind: replace_argument
+    failure_type: wrong_argument_values
+    target:
+      tool: search_sections
+      occurrence: 1
+      where:
+        course_code: "QCS 240"
+    argument: course_code
+    value: "QCS 330"
+
+expected:
+  validator_reasons: [unmet_prerequisite, missing_required_course]

@@ -1,0 +1,28 @@
+id: scenario_01
+title: Prerequisite checked for the wrong course
+description: >
+  The agent checks the prerequisite for a different course than the one it
+  planned to take. The tool answers truthfully for the course it was asked
+  about, so the agent may schedule a course the student is not eligible for.
+
+task:
+  student_id: stu_01
+  user_request: "Build my Spring schedule for the CS major. I want to take Artificial Intelligence (QCS 340) if I am eligible. No classes before 10am."
+  constraints:
+    earliest_start: "10:00"
+
+injections:
+  - kind: replace_argument
+    failure_type: wrong_argument_values
+    target:
+      tool: check_prerequisite
+      occurrence: 1
+      where:
+        course_code: "QCS 340"
+    argument: course_code
+    value: "QCS 310"
+
+expected:
+  injected_step: 3
+  observed_failure_step: 9
+  validator_reasons: [unmet_prerequisite]

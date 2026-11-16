@@ -1,0 +1,25 @@
+id: scenario_02
+title: Section search sent with a malformed time
+description: >
+  The first section search goes out with a number where the earliest start
+  time should be a "HH:MM" string. The call fails the tool's schema and the
+  tool returns an error instead of sections.
+
+task:
+  student_id: stu_02
+  user_request: "Build my Spring schedule for the CS major. No classes before 10am."
+  constraints:
+    earliest_start: "10:00"
+
+injections:
+  - kind: replace_argument
+    failure_type: invalid_arguments
+    target:
+      tool: search_sections
+      occurrence: 1
+    argument: earliest_start
+    value: 1000
+
+expected:
+  injected_step: 6
+  validator_reasons: []

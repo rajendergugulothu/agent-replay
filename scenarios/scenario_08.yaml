@@ -1,0 +1,24 @@
+id: scenario_08
+title: Degree requirements fetched for a different student
+description: >
+  The very first call asks for another student's degree requirements. Every
+  later step plans around the wrong list of remaining courses.
+
+task:
+  student_id: stu_03
+  user_request: "Build my Spring schedule for the CS major. No classes before 10am."
+  constraints:
+    earliest_start: "10:00"
+
+injections:
+  - kind: replace_argument
+    failure_type: wrong_argument_values
+    target:
+      tool: get_degree_requirements
+      occurrence: 1
+    argument: student_id
+    value: "stu_02"
+
+expected:
+  injected_step: 1
+  validator_reasons: [invalid_schedule, missing_required_course]
