@@ -51,6 +51,7 @@ class Settings:
     max_concurrent_runs: int
     rate_limit_per_minute: int
     allowed_origin: str
+    demo_scenarios: tuple[str, ...]
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -75,6 +76,9 @@ class Settings:
             max_concurrent_runs=_int("MAX_CONCURRENT_RUNS", 2),
             rate_limit_per_minute=_int("RATE_LIMIT_PER_MINUTE", 30),
             allowed_origin=os.environ.get("ALLOWED_ORIGIN", "").strip(),
+            demo_scenarios=tuple(
+                s.strip() for s in os.environ.get("DEMO_SCENARIOS", "").split(",") if s.strip()
+            ),
         )
 
     def require_models(self) -> None:

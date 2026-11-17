@@ -2,7 +2,7 @@
 
 from collections.abc import Callable
 from itertools import combinations
-from typing import Any
+from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
@@ -18,17 +18,22 @@ class _Args(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
 
 
+# Ids are short. The length caps keep an edited argument from carrying a
+# paragraph of text into the model's context.
+ShortText = Annotated[str, Field(min_length=1, max_length=24)]
+
+
 class GetDegreeRequirementsArgs(_Args):
-    student_id: str
+    student_id: ShortText
 
 
 class CheckPrerequisiteArgs(_Args):
-    student_id: str
-    course_code: str
+    student_id: ShortText
+    course_code: ShortText
 
 
 class SearchSectionsArgs(_Args):
-    course_code: str
+    course_code: ShortText
     earliest_start: str | None = Field(
         default=None,
         pattern=TIME_PATTERN,
@@ -37,8 +42,8 @@ class SearchSectionsArgs(_Args):
 
 
 class BuildScheduleArgs(_Args):
-    student_id: str
-    section_ids: list[str] = Field(min_length=1, max_length=10)
+    student_id: ShortText
+    section_ids: list[ShortText] = Field(min_length=1, max_length=10)
 
 
 def get_degree_requirements(args: GetDegreeRequirementsArgs) -> dict[str, Any]:

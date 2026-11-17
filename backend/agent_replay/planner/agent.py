@@ -10,6 +10,7 @@ from typing import Any
 
 from agent_replay.catalog import load_catalog
 from agent_replay.injection import FaultInjector
+from agent_replay.llm import OfflineMiss
 from agent_replay.models import (
     Checkpoint,
     Constraints,
@@ -176,6 +177,9 @@ def run_agent(
                 request["temperature"] = settings.temperature
             try:
                 response = client.chat.completions.create(**request)
+            except OfflineMiss:
+                finish("error", "offline_unavailable", None, None)
+                raise
             except Exception as exc:
                 finish("error", "api_error", None, None)
                 raise AgentError(f"model call failed at step {step_number}: {exc}") from exc
