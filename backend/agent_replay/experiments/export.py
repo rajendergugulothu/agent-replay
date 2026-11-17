@@ -248,3 +248,48 @@ def export_results(recorder: TraceRecorder, experiment_id: str, out_dir: Path) -
             },
         )
     return summary
+
+
+def markdown_summary(summary: dict[str, Any]) -> str:
+    """The results as Markdown tables, for the README. Built only from the
+    summary file, so the README cannot drift from the stored numbers."""
+
+    def pct(r: dict[str, Any]) -> str:
+        return "n/a" if r["value"] is None else f"{r['value']:.0%} ({r['numerator']}/{r['denominator']})"
+
+    def num(value: float | None) -> str:
+        return "n/a" if value is None else f"{value:,.0f}"
+
+    frozen = summary.get("frozen", {})
+    lines = [
+        f"Experiment `{summary['experiment_id']}`"
+        + (f", version {frozen['version']}, frozen on {frozen['frozen_on']}" if frozen else "")
+        + f". {summary['run_count']} stored runs across {summary['scenario_count']} scenarios. "
+        f"Agent model: {', '.join(summary['agent_models']) or 'n/a'}. "
+        f"Judge model: {', '.join(summary['judge_models']) or 'n/a'}.",
+        "",
+        "| Localizer | Scored runs | Exact step | Within one step | Failure type | Mean tokens |",
+        "|---|---|---|---|---|---|",
+    ]
+    for method, g in summary["by_localizer"].items():
+        lines.append(
+            f"| {method} | {g['n']} | {pct(g['exact_step_accuracy'])} | {pct(g['within_one_accuracy'])} "
+            f"| {pct(g['failure_type_accuracy'])} | {num(g['mean_tokens'])} |"
+        )
+    lines += [
+        "",
+        "| Recovery strategy | Runs | Recovered | Mean total tokens | Mean restart tokens | Cheaper than restart |",
+        "|---|---|---|---|---|---|",
+    ]
+    for key, g in summary["by_strategy"].items():
+        lines.append(
+            f"| {key} | {g['n']} | {pct(g['recovery_success'])} | {num(g['mean_total_tokens'])} "
+            f"| {num(g['mean_restart_tokens'])} | {pct(g['cheaper_than_restart'])} |"
+        )
+    unconfirmed = [s["id"] for s in summary["scenarios"] if s["label_status"] != "confirmed"]
+    lines += ["", f"Missed cases listed in the results file: {len(summary['missed_cases'])}."]
+    if unconfirmed:
+        lines.append(
+            f"Scenarios without a confirmed label, excluded from localization scoring: {', '.join(unconfirmed)}."
+        )
+    return "\n".join(lines)

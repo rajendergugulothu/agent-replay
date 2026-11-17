@@ -590,3 +590,21 @@ Open questions for you:
 - Which exact model ids go in `.env` as the defaults for `OPENAI_MODEL` and `JUDGE_MODEL`?
 - The Agent Replay doc mentions saving developer feedback (accepting or overriding a diagnosis) to improve the judge prompt. It is not in any build prompt, so it is left out of this design. Add it, or leave it for after Nov 30?
 - The doc also lists "edit the tool output" and "change the prompt" as repairs. The build prompts only cover editing arguments. This design follows the build prompts.
+
+## 11. Changes made during the build
+
+The code follows this design. Where it differs, the difference is listed here so the document stays true.
+
+- **Validator reason codes.** Two were added: `credit_minimum_not_met` (each student has a minimum credit load, otherwise a one-course schedule would pass) and `budget_exhausted` (the run hit its step or token limit before the agent finished).
+- **Injector return values.** `alter_model_input`, `alter_tool_call` and `alter_tool_output` return a list of log entries, not one optional entry, because two faults can land on the same step.
+- **`repeat_call`.** It replaces the model's chosen call with a copy of the previous call, `times` steps in a row. It does not insert extra synthetic steps. Every wasted step is still a real model turn.
+- **`drop_constraint`.** It also takes `times`, the number of consecutive model inputs that lose the constraint.
+- **Continuation modes.** There are three: `forced_action`, `repair_hint`, and `regenerate` (restore the checkpoint and let the model choose again with no hint). `regenerate` is the true-step fix for `drop_constraint`, as section 10 proposed.
+- **Two-error labeling.** Labeling fixes the first injected step, and separately fixes each later fault alone with the earlier fault still in the history. "Both fixed together" is not a separate run: because faults are never re-injected, fixing the first step already removes the later one.
+- **Label threshold.** A label is confirmed when more than half of the continuations recover, which is 2 of 3 with the default.
+- **Rule-based time check.** The user's earliest-start rule is checked only on `build_schedule`, where a violation is certain. A section search without the time filter is not flagged, because the agent can still pick late sections from the full list.
+- **Schema additions.** `runs.repair_hint` and `runs.unfired_injections`, `scenarios.label_detail_json`, `diagnoses.checks_passed_json`. `recoveries.method` is an empty string, not NULL, for the two shared baselines, so the unique key works.
+- **Output cap.** Every model call sends `max_completion_tokens` (env `MAX_COMPLETION_TOKENS`). This came out of the security review.
+- **API.** `POST /api/reset` clears visitor runs. `GET /api/results` serves only `results/frozen/results.json`. `POST /api/runs/{id}/resume` builds the repair hint on the server from a stored diagnosis and accepts no free text.
+- **User message.** The student id is prepended to the request ("Student id: stu_01. ...") so the agent has it without a lookup tool.
+- **Offline mode.** Requests are matched to recorded responses by a hash of the model name and the messages. A visitor action that was not recorded ends with a clear "not available offline" message.

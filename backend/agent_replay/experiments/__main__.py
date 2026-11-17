@@ -13,7 +13,7 @@ import sys
 from datetime import date
 
 from agent_replay.config import Settings
-from agent_replay.experiments.export import export_results
+from agent_replay.experiments.export import export_results, markdown_summary
 from agent_replay.experiments.labeling import label_all
 from agent_replay.experiments.runner import make_plan, run_experiment
 from agent_replay.experiments.scoring import LocalizerScore, format_table
@@ -37,12 +37,23 @@ def main() -> int:
     freeze = sub.add_parser("freeze", help="copy an experiment's results to results/frozen")
     freeze.add_argument("--experiment-id", required=True)
     freeze.add_argument("--version", required=True)
+    sub.add_parser("table", help="print the frozen results as Markdown tables for the README")
     args = parser.parse_args()
 
     settings = Settings.from_env()
     recorder = TraceRecorder(settings.database_path)
     scenarios = load_scenarios(settings.scenarios_dir)
     out_dir = settings.results_dir / getattr(args, "experiment_id", "")
+
+    if args.command == "table":
+        frozen_file = settings.results_dir / "frozen" / "results.json"
+        if not frozen_file.exists():
+            print(
+                f"{frozen_file} does not exist. Run the experiment, export and freeze first.", file=sys.stderr
+            )
+            return 1
+        print(markdown_summary(json.loads(frozen_file.read_text())))
+        return 0
 
     if args.command == "export":
         summary = export_results(recorder, args.experiment_id, out_dir)

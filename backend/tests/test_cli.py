@@ -83,12 +83,19 @@ def test_experiment_commands_end_to_end(env: Path, monkeypatch: pytest.MonkeyPat
     )
     capsys.readouterr()
     assert call(monkeypatch, experiments_cli.main, "freeze", "--experiment-id", "t1", "--version", "v0") == 1
+    assert call(monkeypatch, experiments_cli.main, "table") == 1
     assert call(monkeypatch, experiments_cli.main, "export", "--experiment-id", "t1") == 0
     assert "exact step" in capsys.readouterr().out
     assert call(monkeypatch, experiments_cli.main, "freeze", "--experiment-id", "t1", "--version", "v0") == 0
     frozen = json.loads((env / "results" / "frozen" / "results.json").read_text())
     assert frozen["frozen"]["version"] == "v0" and frozen["experiment_id"] == "t1"
     assert (env / "results" / "frozen" / "results.csv").is_file()
+    capsys.readouterr()
+    assert call(monkeypatch, experiments_cli.main, "table") == 0
+    table = capsys.readouterr().out
+    assert "Experiment `t1`, version v0" in table and "| Localizer |" in table and "| full_restart |" in table
+    exact = frozen["by_localizer"]["llm"]["exact_step_accuracy"]
+    assert f"({exact['numerator']}/{exact['denominator']})" in table
 
 
 def test_demo_record_command(env: Path, monkeypatch: pytest.MonkeyPatch, capsys: Any) -> None:
