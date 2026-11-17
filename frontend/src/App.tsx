@@ -68,10 +68,14 @@ export function App(): JSX.Element {
 
   const goTo = useCallback((next: Screen): void => {
     setScreen(next);
-    window.scrollTo(0, 0);
-    // Move focus with the view so keyboard and screen reader users land on the new screen.
-    mainRef.current?.focus();
   }, []);
+
+  // Runs after the new screen has rendered, so the view starts at its top and
+  // keyboard and screen reader users land on the new content.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    mainRef.current?.focus({ preventScroll: true });
+  }, [screen]);
 
   const clearSession = useCallback((): void => {
     setOriginalId(null);

@@ -277,13 +277,15 @@
   display: inline-block;
   padding: 0.1rem 0.6rem;
   border-radius: 999px;
-  background: var(--accent-soft);
+  border: 1px solid #b9c8f3;
+  background: var(--surface);
   color: var(--accent-dark);
   font-size: 0.8rem;
   font-weight: 650;
 }
 
 .pill--quiet {
+  border-color: var(--line);
   background: var(--line-soft);
   color: var(--ink-2);
 }
@@ -319,6 +321,10 @@
   border-left: 8px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
+}
+
+/* Only steps that arrive during a live run slide in. */
+.timeline--live .step {
   animation: appear 0.25s ease-out;
 }
 

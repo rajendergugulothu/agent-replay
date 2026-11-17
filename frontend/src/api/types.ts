@@ -204,14 +204,17 @@ export interface StrategySummary {
   strategy: string;
   method: LocalizerMethod | null;
   n: number;
+  // How many cases got a recovery run at all. A localizer with no finding has none.
+  attempted: Ratio;
   recovery_success: Ratio;
-  mean_localization_tokens: number;
-  mean_repair_tokens: number;
-  mean_replay_tokens: number;
-  mean_total_tokens: number;
-  mean_seconds: number;
-  mean_restart_tokens: number;
-  cheaper_than_restart: Ratio;
+  recovered_and_cheaper: Ratio;
+  // Means cover attempted recoveries only, so they are null when there were none.
+  mean_localization_tokens: number | null;
+  mean_repair_tokens: number | null;
+  mean_replay_tokens: number | null;
+  mean_total_tokens: number | null;
+  mean_seconds: number | null;
+  mean_restart_tokens: number | null;
   run_ids: string[];
 }
 

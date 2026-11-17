@@ -7,7 +7,12 @@ const outDir = process.argv[3] ?? '../docs/screenshots';
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1366, height: 768 }, deviceScaleFactor: 2 });
-const shot = (name) => page.screenshot({ path: `${outDir}/${name}.png` });
+const shot = async (name) => {
+  // Clicking can scroll the page, and each screen is meant to be seen from its top.
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: `${outDir}/${name}.png` });
+};
 
 await page.goto(baseURL);
 await page.locator('[data-scenario="scenario_01"]').click();
@@ -36,6 +41,5 @@ await shot('5-compare');
 await page.getByRole('button', { name: 'See the experiment results' }).click();
 await page.getByRole('heading', { name: 'Experiment results' }).waitFor();
 await shot('6-results');
-await page.screenshot({ path: `${outDir}/6-results-full.png`, fullPage: true });
 
 await browser.close();

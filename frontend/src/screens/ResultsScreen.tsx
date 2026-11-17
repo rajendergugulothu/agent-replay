@@ -164,27 +164,36 @@ export function ResultsView({ results }: ViewProps): JSX.Element {
       <section className="panel" aria-labelledby="cost-heading">
         <h2 id="cost-heading">Mean tokens per recovery</h2>
         <p className="muted">
-          Each bar is the mean cost of one recovery, split into finding the step, repairing it, and running
-          the rest. The dark line marks the mean cost of a full restart.
+          Each bar is the mean cost of one attempted recovery, split into finding the step, repairing it, and
+          running the rest. The dark line marks the mean cost of a full restart. Cases where a localizer found
+          no step have no recovery run and are left out of these means. They still count as not recovered.
         </p>
         <StackedCost
           title="Mean tokens per strategy, split into localization, repair and replay"
-          rows={strategies.map((s) => ({
-            label: strategyLabel(s),
-            localization: s.mean_localization_tokens,
-            repair: s.mean_repair_tokens,
-            replay: s.mean_replay_tokens,
-            total: s.mean_total_tokens,
-            reference: s.mean_restart_tokens,
-          }))}
+          rows={strategies.flatMap((s) =>
+            // A strategy with no attempted recovery has no cost to draw.
+            s.mean_total_tokens === null
+              ? []
+              : [
+                  {
+                    label: strategyLabel(s),
+                    localization: s.mean_localization_tokens ?? 0,
+                    repair: s.mean_repair_tokens ?? 0,
+                    replay: s.mean_replay_tokens ?? 0,
+                    total: s.mean_total_tokens,
+                    reference: s.mean_restart_tokens ?? 0,
+                  },
+                ],
+          )}
         />
         <table className="table table--compact">
           <caption>Strategies</caption>
           <thead>
             <tr>
               <th scope="col">Strategy</th>
+              <th scope="col">Attempted</th>
               <th scope="col">Recovered</th>
-              <th scope="col">Cheaper than restart</th>
+              <th scope="col">Recovered and cheaper than a restart</th>
               <th scope="col" className="num">
                 Localization
               </th>
@@ -206,8 +215,9 @@ export function ResultsView({ results }: ViewProps): JSX.Element {
             {Object.entries(results.by_strategy).map(([key, s]) => (
               <tr key={key} data-strategy={key}>
                 <th scope="row">{strategyLabel(s)}</th>
+                <td>{formatRatio(s.attempted)}</td>
                 <td>{formatRatio(s.recovery_success)}</td>
-                <td>{formatRatio(s.cheaper_than_restart)}</td>
+                <td>{formatRatio(s.recovered_and_cheaper)}</td>
                 <td className="num">{formatTokens(s.mean_localization_tokens)}</td>
                 <td className="num">{formatTokens(s.mean_repair_tokens)}</td>
                 <td className="num">{formatTokens(s.mean_replay_tokens)}</td>

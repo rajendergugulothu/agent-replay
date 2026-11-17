@@ -18,7 +18,7 @@ interface Props {
 }
 
 const WIDTH = 1100;
-const HEIGHT = 360;
+const HEIGHT = 310;
 const TOP = 56;
 const BOTTOM = 56;
 const LEFT = 56;

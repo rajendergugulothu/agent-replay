@@ -24,7 +24,7 @@ export function Timeline({ label, steps, marks, validation, live }: Props): JSX.
   };
 
   return (
-    <div className="timeline">
+    <div className={live ? 'timeline timeline--live' : 'timeline'}>
       <ol className="timeline__list" aria-label={label} aria-live="polite" aria-relevant="additions">
         {steps.map((step, index) => {
           const mark = marks[index];
@@ -74,7 +74,7 @@ export function Timeline({ label, steps, marks, validation, live }: Props): JSX.
                   {step.injection && (
                     <span className="tag tag--planted">
                       <StatusMark kind="planted" size={14} />
-                      Fault planted here
+                      Fault planted
                     </span>
                   )}
                 </span>

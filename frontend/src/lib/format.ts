@@ -2,7 +2,8 @@ import type { Ratio } from '../api/types';
 
 const whole = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
 
-export function formatTokens(n: number): string {
+export function formatTokens(n: number | null): string {
+  if (n === null) return 'n/a';
   return whole.format(n);
 }
 

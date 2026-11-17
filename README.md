@@ -29,6 +29,12 @@ A negative result counts. If a full restart turns out more reliable for some fai
 
 The design, with every judgment call marked, is in [docs/DESIGN.md](docs/DESIGN.md).
 
+## What it looks like
+
+![Diagnose screen: the predicted step is marked, later steps are marked as affected](docs/screenshots/3-diagnose.png)
+
+The six screens are in [docs/screenshots](docs/screenshots): start, run timeline, diagnose, repair, compare, results. These screenshots were taken with the test stand-in for the model, not the OpenAI API. Any number visible in them, including on the results screen, is test data and not a result.
+
 ## Results
 
 **The experiment has not been run yet.** There are no numbers in this repository, and the results screen in the app says so. Every number shown anywhere must come from a stored run.

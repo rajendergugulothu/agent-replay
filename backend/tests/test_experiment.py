@@ -310,3 +310,18 @@ def test_experiment_passes_the_output_cap_to_agent_and_judge(
     assert agent_calls and all(
         c["max_completion_tokens"] == agent_settings.max_completion_tokens for c in agent_calls
     )
+
+
+def test_no_finding_cases_do_not_make_a_method_look_cheap(done: TraceRecorder) -> None:
+    summary = build_summary(done, "exp")
+    rule = summary["by_strategy"]["resume_predicted:rule"]
+    # The rules find nothing on scenario_01 (2 trials) and find step 1 on scenario_08.
+    assert (rule["n"], rule["attempted"]["numerator"]) == (4, 2)
+    assert len(rule["run_ids"]) == 2
+    attempted = done.query(
+        "SELECT total_tokens FROM recoveries WHERE strategy = 'resume_predicted' AND method = 'rule' "
+        "AND recovery_run_id IS NOT NULL"
+    )
+    assert rule["mean_total_tokens"] == sum(r["total_tokens"] for r in attempted) / 2
+    assert rule["recovered_and_cheaper"]["denominator"] == 4
+    assert rule["recovered_and_cheaper"]["numerator"] <= rule["recovery_success"]["numerator"]

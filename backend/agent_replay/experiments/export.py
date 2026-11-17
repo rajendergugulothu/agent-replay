@@ -142,28 +142,34 @@ def build_summary(recorder: TraceRecorder, experiment_id: str) -> dict[str, Any]
         rows = [r for r in recoveries if r["strategy"] == strategy and r["method"] == method]
         if not rows:
             continue
+        # A localizer with no finding has no recovery run. Counting it as a
+        # zero-cost recovery would make the method look cheap, so token and time
+        # means cover only recoveries that were attempted, and a recovery only
+        # counts as beating a restart if it also succeeded.
+        attempted = [r for r in rows if r["recovery_run_id"]]
         restart_tokens = []
-        cheaper = 0
-        compared = 0
-        for r in rows:
+        recovered_and_cheaper = 0
+        for r in attempted:
             restart = by_original.get(r["original_run_id"], {}).get(("full_restart", ""))
             if restart:
                 restart_tokens.append(float(restart["total_tokens"]))
-                compared += 1
-                cheaper += r["total_tokens"] < restart["total_tokens"]
+                recovered_and_cheaper += (
+                    bool(r["task_success"]) and r["total_tokens"] < restart["total_tokens"]
+                )
         by_strategy[f"{strategy}:{method}" if method else strategy] = {
             "strategy": strategy,
             "method": method or None,
             "n": len(rows),
+            "attempted": ratio(len(attempted), len(rows)).model_dump(),
             "recovery_success": ratio(sum(r["task_success"] for r in rows), len(rows)).model_dump(),
-            "mean_localization_tokens": _mean([r["localization_tokens"] for r in rows]),
-            "mean_repair_tokens": _mean([r["repair_tokens"] for r in rows]),
-            "mean_replay_tokens": _mean([r["replay_tokens"] for r in rows]),
-            "mean_total_tokens": _mean([r["total_tokens"] for r in rows]),
-            "mean_seconds": _mean([r["seconds"] for r in rows]),
+            "recovered_and_cheaper": ratio(recovered_and_cheaper, len(rows)).model_dump(),
+            "mean_localization_tokens": _mean([r["localization_tokens"] for r in attempted]),
+            "mean_repair_tokens": _mean([r["repair_tokens"] for r in attempted]),
+            "mean_replay_tokens": _mean([r["replay_tokens"] for r in attempted]),
+            "mean_total_tokens": _mean([r["total_tokens"] for r in attempted]),
+            "mean_seconds": _mean([r["seconds"] for r in attempted]),
             "mean_restart_tokens": _mean(restart_tokens),
-            "cheaper_than_restart": ratio(cheaper, compared).model_dump(),
-            "run_ids": [r["recovery_run_id"] for r in rows if r["recovery_run_id"]],
+            "run_ids": [r["recovery_run_id"] for r in attempted],
         }
 
     models = sorted({r["model"] for r in all_runs})
@@ -278,13 +284,13 @@ def markdown_summary(summary: dict[str, Any]) -> str:
         )
     lines += [
         "",
-        "| Recovery strategy | Runs | Recovered | Mean total tokens | Mean restart tokens | Cheaper than restart |",
-        "|---|---|---|---|---|---|",
+        "| Recovery strategy | Cases | Attempted | Recovered | Recovered and cheaper than a restart | Mean tokens when attempted | Mean restart tokens |",
+        "|---|---|---|---|---|---|---|",
     ]
     for key, g in summary["by_strategy"].items():
         lines.append(
-            f"| {key} | {g['n']} | {pct(g['recovery_success'])} | {num(g['mean_total_tokens'])} "
-            f"| {num(g['mean_restart_tokens'])} | {pct(g['cheaper_than_restart'])} |"
+            f"| {key} | {g['n']} | {pct(g['attempted'])} | {pct(g['recovery_success'])} "
+            f"| {pct(g['recovered_and_cheaper'])} | {num(g['mean_total_tokens'])} | {num(g['mean_restart_tokens'])} |"
         )
     unconfirmed = [s["id"] for s in summary["scenarios"] if s["label_status"] != "confirmed"]
     lines += ["", f"Missed cases listed in the results file: {len(summary['missed_cases'])}."]
