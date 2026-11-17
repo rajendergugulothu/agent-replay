@@ -15,8 +15,6 @@ from agent_replay.planner.agent import AgentSettings
 from agent_replay.recovery import continue_run, original_action, resume_at_true_step, run_scenario
 from agent_replay.tracing import TraceRecorder, now
 
-CONFIRM_AT = 2  # of 3 continuations
-
 
 def sync_scenarios(recorder: TraceRecorder, scenarios: list[Scenario], scenarios_dir: Path) -> None:
     """Mirror the YAML files into the scenarios table. An edited file loses its
@@ -54,7 +52,8 @@ def label_scenario(
                 resume_at_true_step(client, recorder, original, settings, purpose="labeling")
             )
             passes += fixed.status == "passed"
-        status = "confirmed" if passes >= CONFIRM_AT else "not_recovered"
+        # Confirmed when most continuations recover: 2 of the default 3.
+        status = "confirmed" if passes * 2 > trials else "not_recovered"
         detail["fixes"].append({"step": original.injected_step, "passes": passes, "trials": trials})
         # Two-error scenarios: also try fixing each later fault by itself, with
         # the earlier fault still in the history. This answers whether the

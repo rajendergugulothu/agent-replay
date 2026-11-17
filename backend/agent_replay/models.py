@@ -1,12 +1,12 @@
 """Shared data types. Everything that crosses a module boundary is defined here."""
 
-from enum import Enum
+from enum import StrEnum
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
 
-class FailureType(str, Enum):
+class FailureType(StrEnum):
     """Agent failure types from Chip Huyen's AI Engineering."""
 
     WRONG_TOOL = "wrong_tool"

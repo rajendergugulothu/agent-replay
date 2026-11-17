@@ -6,7 +6,7 @@ step, writes down what it changed, and leaves every other step alone.
 
 import hashlib
 import re
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import Any
 
@@ -18,7 +18,7 @@ from agent_replay.models import Constraints, FailureType, ToolCall
 SCENARIO_ID_PATTERN = re.compile(r"^[a-z0-9_]{1,64}$")
 
 
-class FaultKind(str, Enum):
+class FaultKind(StrEnum):
     REPLACE_ARGUMENT = "replace_argument"
     REPLACE_TOOL_CALL = "replace_tool_call"
     REPLACE_TOOL_OUTPUT = "replace_tool_output"
