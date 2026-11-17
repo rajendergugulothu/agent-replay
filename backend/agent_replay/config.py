@@ -38,6 +38,7 @@ class Settings:
     max_tokens_per_run: int
     max_steps_per_run: int
     daily_token_limit: int
+    max_completion_tokens: int
     agent_temperature: float | None
     judge_temperature: float | None
     demo_mode: bool
@@ -63,6 +64,7 @@ class Settings:
             max_tokens_per_run=_int("MAX_TOKENS_PER_RUN", 40_000),
             max_steps_per_run=_int("MAX_STEPS_PER_RUN", 15),
             daily_token_limit=_int("DAILY_TOKEN_LIMIT", 2_000_000),
+            max_completion_tokens=_int("MAX_COMPLETION_TOKENS", 4_000),
             agent_temperature=_float_or_none("AGENT_TEMPERATURE", None),
             judge_temperature=_float_or_none("JUDGE_TEMPERATURE", 0.0),
             demo_mode=_flag("DEMO_MODE"),

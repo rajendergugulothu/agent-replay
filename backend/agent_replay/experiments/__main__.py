@@ -19,7 +19,7 @@ from agent_replay.experiments.runner import make_plan, run_experiment
 from agent_replay.experiments.scoring import LocalizerScore, format_table
 from agent_replay.injection import load_scenarios
 from agent_replay.llm import make_client
-from agent_replay.planner.agent import AgentSettings
+from agent_replay.planner.agent import agent_settings_from
 from agent_replay.tracing import TraceRecorder
 
 
@@ -67,12 +67,7 @@ def main() -> int:
 
     settings.require_models()
     client = make_client(settings)
-    agent = AgentSettings(
-        model=settings.openai_model,
-        temperature=settings.agent_temperature,
-        max_steps=settings.max_steps_per_run,
-        max_tokens=settings.max_tokens_per_run,
-    )
+    agent = agent_settings_from(settings)
     if args.command == "label":
         label_all(client, recorder, scenarios, settings.scenarios_dir, agent, args.trials)
         return 0
@@ -98,6 +93,7 @@ def main() -> int:
         experiment_id=args.experiment_id,
         judge_model=settings.judge_model,
         judge_temperature=settings.judge_temperature,
+        max_completion_tokens=settings.max_completion_tokens,
         trials=args.trials,
     )
     if stopped:

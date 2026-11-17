@@ -19,7 +19,7 @@ from agent_replay.config import Settings
 from agent_replay.injection import load_scenario, scenario_path
 from agent_replay.llm import PlaybackClient, RecordingClient, make_client
 from agent_replay.localizers import diagnose, make_localizer
-from agent_replay.planner.agent import AgentSettings
+from agent_replay.planner.agent import agent_settings_from
 from agent_replay.recovery import (
     build_repair_hint,
     continue_run,
@@ -32,15 +32,6 @@ from agent_replay.tracing import TraceRecorder
 METHODS = ("rule", "llm", "hybrid")
 
 
-def agent_settings(settings: Settings) -> AgentSettings:
-    return AgentSettings(
-        model=settings.openai_model,
-        temperature=settings.agent_temperature,
-        max_steps=settings.max_steps_per_run,
-        max_tokens=settings.max_tokens_per_run,
-    )
-
-
 def walk_demo_flow(
     client: Any, recorder: TraceRecorder, settings: Settings, scenario_id: str
 ) -> dict[str, str]:
@@ -48,12 +39,14 @@ def walk_demo_flow(
     with each localizer, resume with the fix and with each hint, and restart.
     Recording this walk is what makes the same clicks work offline."""
     scenario = load_scenario(scenario_path(settings.scenarios_dir, scenario_id))
-    agent = agent_settings(settings)
+    agent = agent_settings_from(settings)
     original = recorder.load_run(run_scenario(client, recorder, scenario, agent, purpose="demo"))
     outcome: dict[str, str] = {"original": original.status}
     hints: set[tuple[int, str]] = set()
     for method in METHODS:
-        localizer = make_localizer(method, client, settings.judge_model, settings.judge_temperature)
+        localizer = make_localizer(
+            method, client, settings.judge_model, settings.judge_temperature, settings.max_completion_tokens
+        )
         _, diagnosis = diagnose(recorder, original, localizer)
         outcome[method] = str(diagnosis.predicted_step)
         if diagnosis.predicted_step is not None:

@@ -5,6 +5,7 @@ what every verification and recovery uses. Deterministic replay makes no model
 calls and only shows, and checks, what was recorded.
 """
 
+import dataclasses
 import json
 from typing import Any, Literal
 
@@ -40,12 +41,7 @@ def start_scenario_run(
     """Create the run row for an original (fault-injected) run. Split from the
     run itself so the API can return the id before the agent starts."""
     if scenario.limits.max_steps is not None:
-        settings = AgentSettings(
-            model=settings.model,
-            temperature=settings.temperature,
-            max_steps=min(settings.max_steps, scenario.limits.max_steps),
-            max_tokens=settings.max_tokens,
-        )
+        settings = dataclasses.replace(settings, max_steps=min(settings.max_steps, scenario.limits.max_steps))
     run_id = recorder.start_run(
         scenario_id=scenario.id,
         kind="original",

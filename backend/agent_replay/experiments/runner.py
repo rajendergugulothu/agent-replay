@@ -138,6 +138,7 @@ def run_cell(
     judge_model: str,
     judge_temperature: float | None,
     log: Callable[[str], None],
+    max_completion_tokens: int = 4_000,
 ) -> None:
     """Everything for one scenario and trial."""
     tag = f"{scenario.id} trial {trial}"
@@ -173,7 +174,7 @@ def run_cell(
         if rows:
             diagnoses[method] = (rows[0]["id"], load_diagnosis(rows[0]))
         else:
-            localizer = make_localizer(method, client, judge_model, judge_temperature)
+            localizer = make_localizer(method, client, judge_model, judge_temperature, max_completion_tokens)
             diagnoses[method] = diagnose(recorder, original, localizer)
             log(f"{tag}: {method} predicts step {diagnoses[method][1].predicted_step}")
 
@@ -249,6 +250,7 @@ def run_experiment(
     judge_model: str,
     judge_temperature: float | None,
     trials: int = 3,
+    max_completion_tokens: int = 4_000,
     log: Callable[[str], None] = print,
 ) -> list[str]:
     """Run every cell. Returns the cells that stopped on an error, so the
@@ -272,6 +274,7 @@ def run_experiment(
                     judge_model,
                     judge_temperature,
                     log,
+                    max_completion_tokens,
                 )
             except Exception as exc:  # noqa: BLE001
                 # One failed API call must not lose the rest of the experiment.

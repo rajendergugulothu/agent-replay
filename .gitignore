@@ -2,6 +2,8 @@
 .env.*
 !.env.example
 *.db
+# The frozen experiment database ships in the image, so it is tracked.
+!demo/seed.db
 *.db-wal
 *.db-shm
 data/
@@ -17,4 +19,3 @@ node_modules/
 frontend/dist/
 frontend/test-results/
 frontend/playwright-report/
-recordings/

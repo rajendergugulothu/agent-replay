@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from agent_replay.catalog import load_catalog
+from agent_replay.config import Settings
 from agent_replay.injection import FaultInjector
 from agent_replay.llm import OfflineMiss
 from agent_replay.models import (
@@ -46,6 +47,19 @@ class AgentSettings:
     temperature: float | None
     max_steps: int
     max_tokens: int
+    # Caps one reply. The run budget is only checked between steps, so without
+    # this a single call could overshoot it by any amount.
+    max_completion_tokens: int = 4_000
+
+
+def agent_settings_from(settings: Settings) -> AgentSettings:
+    return AgentSettings(
+        model=settings.openai_model or "unset",
+        temperature=settings.agent_temperature,
+        max_steps=settings.max_steps_per_run,
+        max_tokens=settings.max_tokens_per_run,
+        max_completion_tokens=settings.max_completion_tokens,
+    )
 
 
 def initial_state(student_id: str, user_request: str) -> Checkpoint:
@@ -172,6 +186,7 @@ def run_agent(
                 "messages": model_input,
                 "tools": tool_schemas(),
                 "parallel_tool_calls": False,
+                "max_completion_tokens": settings.max_completion_tokens,
             }
             if settings.temperature is not None:
                 request["temperature"] = settings.temperature

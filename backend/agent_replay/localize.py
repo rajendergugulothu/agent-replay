@@ -24,7 +24,9 @@ def main() -> int:
     if args.method != "rule":
         settings.require_models()
         client = make_client(settings)
-    localizer = make_localizer(args.method, client, settings.judge_model, settings.judge_temperature)
+    localizer = make_localizer(
+        args.method, client, settings.judge_model, settings.judge_temperature, settings.max_completion_tokens
+    )
     _, diagnosis = diagnose(recorder, run, localizer)
     print(f"Method: {diagnosis.method}")
     print(f"Predicted step: {diagnosis.predicted_step}   (injected step, for reference: {run.injected_step})")

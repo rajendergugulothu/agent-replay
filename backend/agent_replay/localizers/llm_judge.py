@@ -77,10 +77,13 @@ def build_prompt(view: LocalizerView, checks_passed: list[str] | None = None) ->
 class LLMJudgeLocalizer:
     method: Method = "llm"
 
-    def __init__(self, client: Any, model: str, temperature: float | None = 0.0) -> None:
+    def __init__(
+        self, client: Any, model: str, temperature: float | None = 0.0, max_completion_tokens: int = 4_000
+    ) -> None:
         self.client = client
         self.model = model
         self.temperature = temperature
+        self.max_completion_tokens = max_completion_tokens
 
     def localize(self, view: LocalizerView, checks_passed: list[str] | None = None) -> Diagnosis:
         started = time.perf_counter()
@@ -88,6 +91,7 @@ class LLMJudgeLocalizer:
             "model": self.model,
             "messages": [{"role": "user", "content": build_prompt(view, checks_passed)}],
             "response_format": RESPONSE_FORMAT,
+            "max_completion_tokens": self.max_completion_tokens,
         }
         if self.temperature is not None:
             request["temperature"] = self.temperature

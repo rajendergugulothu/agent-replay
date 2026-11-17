@@ -286,3 +286,27 @@ def test_scenario_step_limit_is_applied(recorder: TraceRecorder, agent_settings:
     scenario: Scenario = load_scenario(SCENARIOS_DIR / "scenario_06.yaml")
     run = recorder.load_run(run_scenario(FakeClient(), recorder, scenario, agent_settings, purpose="test"))
     assert len(run.steps) == 12 and run.stop_reason == "max_steps"
+
+
+def test_experiment_passes_the_output_cap_to_agent_and_judge(
+    recorder: TraceRecorder, agent_settings: AgentSettings
+) -> None:
+    client = FakeClient()
+    run_experiment(
+        client,
+        recorder,
+        SCENARIOS[:1],
+        agent_settings,
+        experiment_id="cap",
+        judge_model="judge",
+        judge_temperature=0.0,
+        trials=1,
+        max_completion_tokens=555,
+        log=lambda _: None,
+    )
+    judge_calls = [c for c in client.calls if "response_format" in c]
+    agent_calls = [c for c in client.calls if "response_format" not in c]
+    assert judge_calls and all(c["max_completion_tokens"] == 555 for c in judge_calls)
+    assert agent_calls and all(
+        c["max_completion_tokens"] == agent_settings.max_completion_tokens for c in agent_calls
+    )

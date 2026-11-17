@@ -23,6 +23,7 @@ def make_settings(tmp_path: Path, **overrides: Any) -> Settings:
         max_tokens_per_run=40_000,
         max_steps_per_run=15,
         daily_token_limit=2_000_000,
+        max_completion_tokens=4_000,
         agent_temperature=None,
         judge_temperature=0.0,
         demo_mode=False,
@@ -370,3 +371,25 @@ def test_serves_the_built_frontend_and_seeds_the_database(tmp_path: Path) -> Non
     assert "Agent Replay" in api.get("/").text
     assert api.get("/api/health").status_code == 200
     assert api.get(f"/api/runs/{seeded_run['id']}").status_code == 200
+
+
+def test_rate_limit_ignores_client_supplied_forwarded_addresses(tmp_path: Path) -> None:
+    settings = make_settings(tmp_path, production=True, rate_limit_per_minute=2)
+    api = TestClient(create_app(settings, FakeClient()))
+    # The client invents a new first address each time. The proxy's entry, the
+    # last one, stays the same, so the limit still applies.
+    codes = [
+        api.post("/api/reset", headers={"X-Forwarded-For": f"10.0.0.{n}, 203.0.113.9"}).status_code
+        for n in range(3)
+    ]
+    assert codes == [200, 200, 429]
+    other = api.post("/api/reset", headers={"X-Forwarded-For": "10.0.0.1, 203.0.113.10"})
+    assert other.status_code == 200
+
+
+def test_every_model_call_carries_an_output_cap(tmp_path: Path) -> None:
+    fake = FakeClient()
+    api = TestClient(create_app(make_settings(tmp_path, max_completion_tokens=777), fake))
+    run = start(api)
+    api.post(f"/api/runs/{run['id']}/localize", json={"method": "llm"})
+    assert fake.calls and all(call["max_completion_tokens"] == 777 for call in fake.calls)

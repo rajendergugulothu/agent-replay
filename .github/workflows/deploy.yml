@@ -1,0 +1,79 @@
+name: Deploy
+
+# Builds the image, deploys to staging, runs the live smoke test there, then
+# promotes the same image to production. It does nothing until the repository
+# variables in docs/DEPLOY.md are set.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  REGION: ${{ vars.GCP_REGION }}
+  PROJECT: ${{ vars.GCP_PROJECT_ID }}
+  IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/agent-replay/app:${{ github.sha }}
+  RUNTIME_SA: agent-replay-run@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+  # Joined with "@" because DEMO_SCENARIOS itself contains commas.
+  COMMON_ENV: "OPENAI_MODEL=${{ vars.OPENAI_MODEL }}@JUDGE_MODEL=${{ vars.JUDGE_MODEL }}@DEMO_MODE=1@PRODUCTION=1@MAX_TOKENS_PER_RUN=40000@MAX_STEPS_PER_RUN=15@DEMO_SCENARIOS=${{ vars.DEMO_SCENARIOS }}"
+
+jobs:
+  deploy:
+    if: vars.GCP_PROJECT_ID != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Workload Identity Federation: GitHub proves who it is to Google with a
+      # short-lived token. No service account key is stored anywhere.
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build and push the image
+        run: |
+          gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+          docker build -t "${IMAGE}" .
+          docker push "${IMAGE}"
+
+      - name: Deploy to staging
+        run: |
+          gcloud run deploy agent-replay-staging \
+            --image "${IMAGE}" --region "${REGION}" --project "${PROJECT}" \
+            --service-account "${RUNTIME_SA}" \
+            --set-secrets "OPENAI_API_KEY=openai-api-key:latest" \
+            --set-env-vars "^@^${COMMON_ENV}@DAILY_TOKEN_LIMIT=200000" \
+            --min-instances 0 --max-instances 1 --concurrency 40 \
+            --memory 512Mi --cpu 1 --allow-unauthenticated --quiet
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Live smoke test against staging
+        working-directory: backend
+        run: |
+          pip install -e ".[dev]"
+          export SMOKE_URL="$(gcloud run services describe agent-replay-staging \
+            --region "${REGION}" --project "${PROJECT}" --format 'value(status.url)')"
+          pytest -q -m live tests/test_live.py::test_deployed_service
+
+      - name: Promote to production
+        run: |
+          gcloud run deploy agent-replay \
+            --image "${IMAGE}" --region "${REGION}" --project "${PROJECT}" \
+            --service-account "${RUNTIME_SA}" \
+            --set-secrets "OPENAI_API_KEY=openai-api-key:latest" \
+            --set-env-vars "^@^${COMMON_ENV}@DAILY_TOKEN_LIMIT=${{ vars.DAILY_TOKEN_LIMIT || '2000000' }}" \
+            --min-instances "${{ vars.PROD_MIN_INSTANCES || '0' }}" --max-instances 1 --concurrency 40 \
+            --memory 512Mi --cpu 1 --allow-unauthenticated --quiet
+          gcloud run services describe agent-replay --region "${REGION}" --project "${PROJECT}" \
+            --format 'value(status.url)'

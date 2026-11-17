@@ -12,7 +12,7 @@ from agent_replay.config import Settings
 from agent_replay.injection import load_scenario
 from agent_replay.llm import make_client
 from agent_replay.models import StoredRun
-from agent_replay.planner.agent import AgentSettings
+from agent_replay.planner.agent import agent_settings_from
 from agent_replay.recovery import run_scenario
 from agent_replay.tracing import TraceRecorder
 
@@ -51,12 +51,7 @@ def main() -> int:
         make_client(settings),
         recorder,
         load_scenario(args.scenario),
-        AgentSettings(
-            model=settings.openai_model,
-            temperature=settings.agent_temperature,
-            max_steps=settings.max_steps_per_run,
-            max_tokens=settings.max_tokens_per_run,
-        ),
+        agent_settings_from(settings),
         purpose="cli",
     )
     print(format_trace(recorder.load_run(run_id)))

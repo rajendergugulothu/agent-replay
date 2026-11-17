@@ -26,10 +26,16 @@ __all__ = [
 ]
 
 
-def make_localizer(method: str, client: Any, judge_model: str, judge_temperature: float | None) -> Localizer:
+def make_localizer(
+    method: str,
+    client: Any,
+    judge_model: str,
+    judge_temperature: float | None,
+    max_completion_tokens: int = 4_000,
+) -> Localizer:
     if method == "rule":
         return RuleBasedLocalizer()
-    judge = LLMJudgeLocalizer(client, judge_model, judge_temperature)
+    judge = LLMJudgeLocalizer(client, judge_model, judge_temperature, max_completion_tokens)
     if method == "llm":
         return judge
     if method == "hybrid":

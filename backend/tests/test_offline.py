@@ -116,7 +116,9 @@ def test_make_client_needs_a_key_unless_offline(tmp_path: Path) -> None:
     with pytest.raises(RuntimeError, match="OPENAI_API_KEY"):
         make_client(make_settings(tmp_path))
     assert isinstance(make_client(make_settings(tmp_path, offline=True)), PlaybackClient)
-    real = make_client(make_settings(tmp_path, openai_api_key="sk-test-not-real"), record_to=tmp_path / "r")
+    real = make_client(
+        make_settings(tmp_path, openai_api_key="placeholder-not-a-key"), record_to=tmp_path / "r"
+    )
     assert isinstance(real, RecordingClient)
 
 

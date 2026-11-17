@@ -1,0 +1,28 @@
+# Local run of the same image that is deployed.
+#
+#   docker compose up --build              live, uses the key in .env
+#   OFFLINE=1 docker compose up --build    no network needed, recorded responses
+#
+# Then open http://localhost:8000
+services:
+  app:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8080"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PRODUCTION: "0"
+      OFFLINE: "${OFFLINE:-0}"
+      DEMO_MODE: "${DEMO_MODE:-1}"
+      DATABASE_PATH: /tmp/agent_replay.db
+    # The container needs to write nowhere except /tmp.
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped

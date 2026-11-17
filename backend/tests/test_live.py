@@ -18,7 +18,7 @@ from agent_replay.config import Settings
 from agent_replay.injection import load_scenario
 from agent_replay.llm import make_client
 from agent_replay.localizers import diagnose, make_localizer
-from agent_replay.planner.agent import AgentSettings
+from agent_replay.planner.agent import agent_settings_from
 from agent_replay.recovery import full_restart, replay_deterministic, run_scenario
 from agent_replay.tracing import TraceRecorder
 
@@ -32,12 +32,7 @@ def test_one_scenario_against_the_real_api(tmp_path: Path) -> None:
     settings.require_models()
     client = make_client(settings)
     recorder = TraceRecorder(tmp_path / "live.db")
-    agent = AgentSettings(
-        settings.openai_model,
-        settings.agent_temperature,
-        settings.max_steps_per_run,
-        settings.max_tokens_per_run,
-    )
+    agent = agent_settings_from(settings)
     scenario = load_scenario(SCENARIOS_DIR / "scenario_01.yaml")
     run = recorder.load_run(run_scenario(client, recorder, scenario, agent, purpose="test"))
 

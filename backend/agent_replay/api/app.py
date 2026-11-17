@@ -44,7 +44,7 @@ from agent_replay.injection import Scenario, load_scenario, load_scenarios, scen
 from agent_replay.llm import OfflineMiss, make_client
 from agent_replay.localizers import diagnose, load_diagnosis, make_localizer
 from agent_replay.models import FailureType, StoredRun, StoredStep, ToolCall
-from agent_replay.planner.agent import AgentSettings, initial_state, run_agent
+from agent_replay.planner.agent import agent_settings_from, initial_state, run_agent
 from agent_replay.planner.tools import TOOLS, argument_errors, parameters_schema
 from agent_replay.recovery import (
     build_repair_hint,
@@ -132,12 +132,7 @@ def create_app(settings: Settings, client: Any | None = None) -> FastAPI:
     active = {"count": 0}
     active_lock = threading.Lock()
     client_box: dict[str, Any] = {"client": client}
-    agent_settings = AgentSettings(
-        model=settings.openai_model or "unset",
-        temperature=settings.agent_temperature,
-        max_steps=settings.max_steps_per_run,
-        max_tokens=settings.max_tokens_per_run,
-    )
+    agent_settings = agent_settings_from(settings)
 
     app = FastAPI(
         title="Agent Replay",
@@ -228,8 +223,11 @@ def create_app(settings: Settings, client: Any | None = None) -> FastAPI:
         return int(runs + judge)
 
     def rate_limit(request: Request) -> None:
+        # Behind Cloud Run the proxy appends the address it saw to
+        # X-Forwarded-For. Only that last entry is trustworthy: anything before
+        # it was sent by the client and could be invented to dodge the limit.
         forwarded = request.headers.get("x-forwarded-for", "") if settings.production else ""
-        address = forwarded.split(",")[0].strip() or (request.client.host if request.client else "unknown")
+        address = forwarded.split(",")[-1].strip() or (request.client.host if request.client else "unknown")
         if not limiter.allow(address):
             raise ApiError(429, "rate_limited", "Too many requests. Wait a minute and try again.")
 
@@ -448,7 +446,11 @@ def create_app(settings: Settings, client: Any | None = None) -> FastAPI:
             guard_spend(request)
             llm = get_client()
         localizer = make_localizer(
-            body.method, llm, settings.judge_model or "unset", settings.judge_temperature
+            body.method,
+            llm,
+            settings.judge_model or "unset",
+            settings.judge_temperature,
+            settings.max_completion_tokens,
         )
         try:
             diagnosis_id, diagnosis = diagnose(recorder, run, localizer)
